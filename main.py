@@ -131,18 +131,37 @@ else:
 
     df = pd.DataFrame(st.session_state.responses)
     domain_scores = df.groupby("domain")["score"].sum().reset_index()
-    total_score = int(df["score"].sum())
 
-    if total_score <= 10:
-        tier = "📉 Beginner"
-    elif total_score <= 18:
-        tier = "📈 Emerging"
-    elif total_score <= 24:
-        tier = "📊 Developing"
+    total_score = int(df["score"].sum())  # Ensure it's a Python int
+
+    # Determine maturity tier
+    if total_score <= 8:
+        tier = "📉 Early Stage"
+        recommendation = (
+            "Your business is in the early stages of using data to make decisions. "
+            "Start by auditing your existing data sources and create a simple, actionable data strategy. "
+            "We recommend beginning with high-impact areas like performance tracking and customer insights."
+        )
+    elif total_score <= 13:
+        tier = "🔧 Foundational"
+        recommendation = (
+            "You’re building a solid foundation. Focus on aligning your data strategy with business goals, "
+            "and invest in reliable dashboards that give visibility into performance and customer behavior."
+        )
+    elif total_score <= 17:
+        tier = "📈 Emerging Leader"
+        recommendation = (
+            "You’re on your way to becoming a data-led business. Consider consolidating customer data, "
+            "enhancing marketing measurement, and testing AI-powered tools to scale faster."
+        )
     else:
-        tier = "🚀 Mature"
+        tier = "🚀 Data-Driven Pro"
+        recommendation = (
+            "Your business is already leveraging data effectively. Now’s the time to explore advanced automation, "
+            "predictive analytics, and custom AI solutions that give you a competitive edge."
+        )
 
-    # Bubble chart
+    # Visuals
     fig = px.scatter(domain_scores,
                      x="domain",
                      y="score",
@@ -152,20 +171,12 @@ else:
                      title="🫧 Data Maturity by Domain")
     st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown(f"### 🧠 Your Maturity Tier: **{tier}**")
+    st.markdown(f"## 🧠 Your Maturity Tier: **{tier}**")
     st.caption(f"Total Score: {total_score} out of {len(survey_questions) * 4}")
+    st.markdown("### 📌 Recommendations")
+    st.info(recommendation)
 
-    # Recommendations
-    st.markdown("### 📌 Recommendations:")
-    for _, row in domain_scores.iterrows():
-        if row["score"] <= 2:
-            st.warning(f"**{row['domain']}**: Needs foundational work — consider starting here.")
-        elif row["score"] <= 3:
-            st.info(f"**{row['domain']}**: On the right track — refine your strategy and execution.")
-        else:
-            st.success(f"**{row['domain']}**: Looking strong!")
-
-    # Workshop offer
+    # Optional CTA
     st.markdown("---")
     st.subheader("🎁 Want tailored help?")
     interest = st.radio("Would you like a free data strategy workshop?", ["Yes", "No"])
@@ -176,18 +187,13 @@ else:
             if name and email:
                 st.success("✅ Thanks! We'll reach out to you shortly.")
 
-                # Build full data row
+                # Save to Google Sheet
+                client = get_gsheet_client()
+                sheet = client.open("Data Maturity Leads").sheet1
                 row = [name, email, total_score, tier]
                 for r in st.session_state.responses:
                     row.append(r["question"])
                     row.append(r["answer"])
-                
-                # Push to Google Sheet
-                try:
-                    client = get_gsheet_client()
-                    sheet = client.open("Data Maturity Leads").sheet1
-                    sheet.append_row(row)
-                except Exception as e:
-                    st.error(f"❌ Failed to save: {e}")
+                sheet.append_row(row)
             else:
                 st.error("Please enter your name and email.")
