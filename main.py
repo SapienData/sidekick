@@ -23,11 +23,11 @@ with st.sidebar:
     st.image("Sapiedata.png", width=150)
     st.markdown("### Data Maturity Survey")
 
-# Questions
+# Questions 
 survey_questions = [
     {
         "domain": "Strategy & Leadership",
-        "question": "Does your organization have a documented, reviewed data strategy?",
+        "question": "Does your organisation have a documented, reviewed data strategy?",
         "options": [
             ("No strategy at all", 1),
             ("Informal ideas but nothing documented", 2),
@@ -51,7 +51,7 @@ survey_questions = [
         "options": [
             ("Data is stored in spreadsheets and scattered systems", 1),
             ("We have some cloud tools but no integration", 2),
-            ("We use a centralized data platform (e.g., data warehouse)", 3),
+            ("We use a centralised data platform (e.g. data warehouse)", 3),
             ("Our tools are integrated, scalable, and automated", 4),
         ]
     },
@@ -67,7 +67,7 @@ survey_questions = [
     },
     {
         "domain": "Culture & Adoption",
-        "question": "How ingrained is data-driven thinking in your organization?",
+        "question": "How ingrained is data-driven thinking in your organisation?",
         "options": [
             ("Gut feel drives most decisions", 1),
             ("Some teams use data occasionally", 2),
@@ -116,12 +116,11 @@ if st.session_state.step < len(survey_questions):
     if st.button("Next", key=f"next{st.session_state.step}"):
         score = dict(q["options"])[selected]
         st.session_state.responses.append({
-        "domain": q["domain"],
-        "question": q["question"],
-        "answer": selected,
-        "score": score
+            "domain": q["domain"],
+            "question": q["question"],
+            "answer": selected,
+            "score": score
         })
-
         st.session_state.step += 1
         st.rerun()
 
@@ -132,7 +131,7 @@ else:
     df = pd.DataFrame(st.session_state.responses)
     domain_scores = df.groupby("domain")["score"].sum().reset_index()
 
-    total_score = int(df["score"].sum())  # Ensure it's a Python int
+    total_score = int(df["score"].sum())
 
     # Determine maturity tier
     if total_score <= 8:
@@ -146,7 +145,7 @@ else:
         tier = "🔧 Foundational"
         recommendation = (
             "You’re building a solid foundation. Focus on aligning your data strategy with business goals, "
-            "and invest in reliable dashboards that give visibility into performance and customer behavior."
+            "and invest in reliable dashboards that give visibility into performance and customer behaviour."
         )
     elif total_score <= 17:
         tier = "📈 Emerging Leader"
