@@ -181,24 +181,27 @@ else:
     st.subheader("🎁 Want tailored help?")
     interest = st.radio("Would you like a free data strategy workshop?", ["Yes", "No"])
     if interest == "Yes":
-        name = st.text_input("Your Name")
-        email = st.text_input("Work Email")
-        if st.button("Request Workshop"):
-            if name and email:
-                st.success("✅ Thanks! We'll reach out to you shortly.")
+    name = st.text_input("Your Name")
+    email = st.text_input("Work Email")
 
-                # Save to Google Sheet
-                client = get_gsheet_client()
-                sheet = client.open("Data Maturity Leads").sheet1
-                row = [name, email, total_score, tier]
-                for r in st.session_state.responses:
-                    row.append(r["question"])
-                    row.append(r["answer"])
-                sheet.append_row(row)
-                # ✅ Send email here (after name is defined)
+    if st.button("Request Workshop"):
+        if name and email:
+            st.success("✅ Thanks! We'll reach out to you shortly.")
+
+            # Save to Google Sheet
+            client = get_gsheet_client()
+            sheet = client.open("Data Maturity Leads").sheet1
+            row = [name, email, total_score, tier]
+            for r in st.session_state.responses:
+                row.append(r["question"])
+                row.append(r["answer"])
+            sheet.append_row(row)
+
+            # Send email
             send_emailjs_notification(name, email, total_score, tier)
-            else:
-                st.error("Please enter your name and email.")
+
+        else:
+            st.error("Please enter your name and email.")
 
 
 
