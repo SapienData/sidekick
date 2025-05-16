@@ -5,33 +5,47 @@ import gspread
 import requests
 from oauth2client.service_account import ServiceAccountCredentials
 
-def send_emailjs_notification(name, email, score, tier):
-    service_id = st.secrets["emailjs"]["service_id"]
-    template_id = st.secrets["emailjs"]["template_id"]
-    public_key = st.secrets["emailjs"]["public_key"]
+def send_mailjet_email(name, email, score, tier):
+    api_key = st.secrets["mailjet"]["api_key"]
+    api_secret = st.secrets["mailjet"]["api_secret"]
+    from_email = st.secrets["mailjet"]["from_email"]
+    from_name = st.secrets["mailjet"]["from_name"]
 
     payload = {
-        "service_id": service_id,
-        "template_id": template_id,
-        "user_id": public_key,
-        "template_params": {
-            "user_name": name,
-            "user_email": email,
-            "user_score": score,
-            "user_tier": tier
-        }
+        "Messages": [
+            {
+                "From": {
+                    "Email": from_email,
+                    "Name": from_name
+                },
+                "To": [
+                    {
+                        "Email": from_email,  # You receive it
+                        "Name": "Survey Notification"
+                    }
+                ],
+                "Subject": "📊 New Data Maturity Survey Submission",
+                "TextPart": f"""A new lead completed the survey:
+
+Name: {name}
+Email: {email}
+Score: {score}
+Tier: {tier}
+"""
+            }
+        ]
     }
 
     response = requests.post(
-        "https://api.emailjs.com/api/v1.0/email/send",
-        headers={"Content-Type": "application/json"},
+        "https://api.mailjet.com/v3.1/send",
+        auth=(api_key, api_secret),
         json=payload
     )
 
     if response.status_code == 200:
         st.success("📬 Email notification sent!")
     else:
-        st.error(f"❌ Email failed: {response.text}")
+        st.error(f"❌ Mailjet error: {response.status_code} - {response.text}")
 
 # Connect to Google Sheets
 @st.cache_resource
@@ -226,7 +240,7 @@ else:
                 sheet.append_row(row)
 
                 # Send email notification
-                send_emailjs_notification(name, email, total_score, tier)
+                send_mailjet_email(name, email, total_score, tier)
 
             else:
                 st.error("Please enter your name and email.")
