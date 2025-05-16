@@ -191,12 +191,12 @@ else:
                 client = get_gsheet_client()
                 sheet = client.open("Data Maturity Leads").sheet1
                 row = [name, email, total_score, tier]
-                for r in st.session_state.responses:
-                row.append(r["question"])
-                row.append(r["answer"])
-                sheet.append_row(row)
+                    for r in st.session_state.responses:
+                    row.append(r["question"])
+                    row.append(r["answer"])
+                    sheet.append_row(row)
 
-                send_emailjs_notification(name, email, total_score, tier)
+                    send_emailjs_notification(name, email, total_score, tier)
 
             else:
             st.error("Please enter your name and email.")
