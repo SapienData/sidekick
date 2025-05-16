@@ -2,6 +2,7 @@ import streamlit as st
 import plotly.express as px
 import pandas as pd
 import gspread
+import requests
 from oauth2client.service_account import ServiceAccountCredentials
 
 # Connect to Google Sheets
@@ -196,3 +197,33 @@ else:
                 sheet.append_row(row)
             else:
                 st.error("Please enter your name and email.")
+
+send_emailjs_notification(name, email, total_score, tier)
+
+def send_emailjs_notification(name, email, score, tier):
+    service_id = st.secrets["emailjs"]["service_id"]
+    template_id = st.secrets["emailjs"]["template_id"]
+    public_key = st.secrets["emailjs"]["public_key"]
+
+    payload = {
+        "service_id": service_id,
+        "template_id": template_id,
+        "user_id": public_key,
+        "template_params": {
+            "user_name": name,
+            "user_email": email,
+            "user_score": score,
+            "user_tier": tier
+        }
+    }
+
+    response = requests.post(
+        "https://api.emailjs.com/api/v1.0/email/send",
+        headers={"Content-Type": "application/json"},
+        json=payload
+    )
+
+    if response.status_code == 200:
+        st.success("📬 Email notification sent to you!")
+    else:
+        st.error(f"Failed to send email. {response.text}")
