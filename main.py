@@ -198,9 +198,7 @@ else:
             else:
                 st.error("Please enter your name and email.")
 
-send_emailjs_notification(name, email, total_score, tier)
 
-import requests
 
 def send_emailjs_notification(name, email, score, tier):
     service_id = st.secrets["emailjs"]["service_id"]
@@ -229,3 +227,5 @@ def send_emailjs_notification(name, email, score, tier):
         st.success("📬 Email notification sent!")
     else:
         st.error(f"❌ Email failed: {response.text}")
+
+send_emailjs_notification(name, email, total_score, tier)
