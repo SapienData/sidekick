@@ -181,11 +181,11 @@ else:
     st.subheader("🎁 Want tailored help?")
     interest = st.radio("Would you like a free data strategy workshop?", ["Yes", "No"])
     if interest == "Yes":
-    name = st.text_input("Your Name")
-    email = st.text_input("Work Email")
+        name = st.text_input("Your Name")
+        email = st.text_input("Work Email")
 
-    if st.button("Request Workshop"):
-        if name and email:
+        if st.button("Request Workshop"):
+            if name and email:
             st.success("✅ Thanks! We'll reach out to you shortly.")
 
             # Save to Google Sheet
@@ -200,7 +200,7 @@ else:
             # Send email
             send_emailjs_notification(name, email, total_score, tier)
 
-        else:
+            else:
             st.error("Please enter your name and email.")
 
 
