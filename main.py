@@ -195,6 +195,8 @@ else:
                     row.append(r["question"])
                     row.append(r["answer"])
                 sheet.append_row(row)
+                # ✅ Send email here (after name is defined)
+            send_emailjs_notification(name, email, total_score, tier)
             else:
                 st.error("Please enter your name and email.")
 
@@ -212,7 +214,7 @@ def send_emailjs_notification(name, email, score, tier):
         "template_params": {
             "user_name": name,
             "user_email": email,
-            "user_score": score,
+            "user_score": total_score,
             "user_tier": tier
         }
     }
@@ -228,4 +230,4 @@ def send_emailjs_notification(name, email, score, tier):
     else:
         st.error(f"❌ Email failed: {response.text}")
 
-send_emailjs_notification(name, email, total_score, tier)
+
