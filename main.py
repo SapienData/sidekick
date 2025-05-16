@@ -20,11 +20,11 @@ def send_mailjet_email(name, email, score, tier):
                 },
                 "To": [
                     {
-                        "Email": from_email,  # You receive it
+                        "Email": from_email,
                         "Name": "Survey Notification"
                     }
                 ],
-                "Subject": "📊 New Data Maturity Survey Submission",
+                "Subject": "New Data Maturity Survey Submission",
                 "TextPart": f"""A new lead completed the survey:
 
 Name: {name}
@@ -43,7 +43,7 @@ Tier: {tier}
     )
 
     if response.status_code == 200:
-        st.success("📬 Email notification sent!")
+        st.success("📬 Email notification sent to SapienData!")
     else:
         st.error(f"❌ Mailjet error: {response.status_code} - {response.text}")
 
