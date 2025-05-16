@@ -200,6 +200,8 @@ else:
 
 send_emailjs_notification(name, email, total_score, tier)
 
+import requests
+
 def send_emailjs_notification(name, email, score, tier):
     service_id = st.secrets["emailjs"]["service_id"]
     template_id = st.secrets["emailjs"]["template_id"]
@@ -224,6 +226,6 @@ def send_emailjs_notification(name, email, score, tier):
     )
 
     if response.status_code == 200:
-        st.success("📬 Email notification sent to you!")
+        st.success("📬 Email notification sent!")
     else:
-        st.error(f"Failed to send email. {response.text}")
+        st.error(f"❌ Email failed: {response.text}")
