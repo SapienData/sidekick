@@ -5,6 +5,34 @@ import gspread
 import requests
 from oauth2client.service_account import ServiceAccountCredentials
 
+def send_emailjs_notification(name, email, score, tier):
+    service_id = st.secrets["emailjs"]["service_id"]
+    template_id = st.secrets["emailjs"]["template_id"]
+    public_key = st.secrets["emailjs"]["public_key"]
+
+    payload = {
+        "service_id": service_id,
+        "template_id": template_id,
+        "user_id": public_key,
+        "template_params": {
+            "user_name": name,
+            "user_email": email,
+            "user_score": score,
+            "user_tier": tier
+        }
+    }
+
+    response = requests.post(
+        "https://api.emailjs.com/api/v1.0/email/send",
+        headers={"Content-Type": "application/json"},
+        json=payload
+    )
+
+    if response.status_code == 200:
+        st.success("📬 Email notification sent!")
+    else:
+        st.error(f"❌ Email failed: {response.text}")
+
 # Connect to Google Sheets
 @st.cache_resource
 def get_gsheet_client():
@@ -188,47 +216,22 @@ else:
             if name and email:
                 st.success("✅ Thanks! We'll reach out to you shortly.")
 
+                # Save to Google Sheet
                 client = get_gsheet_client()
                 sheet = client.open("Data Maturity Leads").sheet1
                 row = [name, email, total_score, tier]
-                    for r in st.session_state.responses:
+                for r in st.session_state.responses:
                     row.append(r["question"])
                     row.append(r["answer"])
-                    sheet.append_row(row)
+                sheet.append_row(row)
 
-                    send_emailjs_notification(name, email, total_score, tier)
+                # Send email notification
+                send_emailjs_notification(name, email, total_score, tier)
 
             else:
-            st.error("Please enter your name and email.")
+                st.error("Please enter your name and email.")
 
 
 
-def send_emailjs_notification(name, email, score, tier):
-    service_id = st.secrets["emailjs"]["service_id"]
-    template_id = st.secrets["emailjs"]["template_id"]
-    public_key = st.secrets["emailjs"]["public_key"]
-
-    payload = {
-        "service_id": service_id,
-        "template_id": template_id,
-        "user_id": public_key,
-        "template_params": {
-            "user_name": name,
-            "user_email": email,
-            "user_score": total_score,
-            "user_tier": tier
-        }
-    }
-
-    response = requests.post(
-        "https://api.emailjs.com/api/v1.0/email/send",
-        headers={"Content-Type": "application/json"},
-        json=payload
-    )
-
-    if response.status_code == 200:
-        st.success("📬 Email notification sent!")
-    else:
-        st.error(f"❌ Email failed: {response.text}")
 
 
