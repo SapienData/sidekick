@@ -149,16 +149,27 @@ if "step" not in st.session_state:
 # Progress
 st.title("📊 Data Maturity Assessment")
 
+# Store identity info
 if "name" not in st.session_state:
     st.session_state.name = ""
 if "email" not in st.session_state:
     st.session_state.email = ""
+if "started" not in st.session_state:
+    st.session_state.started = False
 
-if not st.session_state.name or not st.session_state.email:
+# Show intro form if not started
+if not st.session_state.started:
     st.subheader("👤 Tell us who you are to begin the survey")
     st.session_state.name = st.text_input("Your Name")
     st.session_state.email = st.text_input("Your Work Email")
-    st.stop()  # 🔒 Stop the app here until fields are filled
+
+    if st.session_state.name and st.session_state.email:
+        if st.button("Start Survey"):
+            st.session_state.started = True
+            st.rerun()
+    else:
+        st.warning("Please enter your name and email to begin.")
+    st.stop()
 progress = int((st.session_state.step / len(survey_questions)) * 100)
 st.progress(progress)
 
@@ -234,8 +245,8 @@ else:
     st.subheader("🎁 Want tailored help?")
     interest = st.radio("Would you like a free data strategy workshop?", ["Yes", "No"])
     if interest == "Yes":
-        st.session_state.name
-        st.session_state.email
+        name = st.session_state.name
+        email = st.session_state.email
 
         if st.button("Request Workshop"):
             if name and email:
