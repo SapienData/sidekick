@@ -148,6 +148,17 @@ if "step" not in st.session_state:
 
 # Progress
 st.title("📊 Data Maturity Assessment")
+
+if "name" not in st.session_state:
+    st.session_state.name = ""
+if "email" not in st.session_state:
+    st.session_state.email = ""
+
+if not st.session_state.name or not st.session_state.email:
+    st.subheader("👤 Tell us who you are to begin the survey")
+    st.session_state.name = st.text_input("Your Name")
+    st.session_state.email = st.text_input("Your Work Email")
+    st.stop()  # 🔒 Stop the app here until fields are filled
 progress = int((st.session_state.step / len(survey_questions)) * 100)
 st.progress(progress)
 
@@ -223,8 +234,8 @@ else:
     st.subheader("🎁 Want tailored help?")
     interest = st.radio("Would you like a free data strategy workshop?", ["Yes", "No"])
     if interest == "Yes":
-        name = st.text_input("Your Name")
-        email = st.text_input("Work Email")
+        st.session_state.name
+        st.session_state.email
 
         if st.button("Request Workshop"):
             if name and email:
@@ -233,14 +244,14 @@ else:
                 # Save to Google Sheet
                 client = get_gsheet_client()
                 sheet = client.open("Data Maturity Leads").sheet1
-                row = [name, email, total_score, tier]
+                row = [st.session_state.name, st.session_state.email, total_score, tier]
                 for r in st.session_state.responses:
                     row.append(r["question"])
                     row.append(r["answer"])
                 sheet.append_row(row)
 
                 # Send email notification
-                send_mailjet_email(name, email, total_score, tier)
+                send_mailjet_email(st.session_state.name,st.session_state.email,total_score,tier)
 
             else:
                 st.error("Please enter your name and email.")
