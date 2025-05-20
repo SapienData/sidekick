@@ -148,6 +148,10 @@ if "step" not in st.session_state:
 
 # Progress
 st.title("📊 Data Maturity Assessment")
+st.markdown(
+    "Discover where your organisation stands on the **data maturity curve** — "
+    "and get clear, actionable steps to evolve your strategy."
+)
 
 # Store identity info
 if "name" not in st.session_state:
