@@ -185,7 +185,7 @@ if not st.session_state.started:
 
                 # ✅ Save early details immediately
                 client = get_gsheet_client()
-                sheet = client.open("Data Maturity Leads").sheet1
+                sheet = client.open("Data Maturity Leads - Sidekick").sheet1
                 sheet.append_row([
                 st.session_state.name,
                 st.session_state.email,
