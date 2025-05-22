@@ -180,8 +180,6 @@ if not st.session_state.started:
     )
 
     if all([st.session_state.name, st.session_state.email, st.session_state.industry, st.session_state.turnover]):
-        if st.button("Start Survey"):
-            st.session_state.started = True
             if st.button("Start Survey"):
                 st.session_state.started = True
 
