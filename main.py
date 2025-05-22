@@ -43,7 +43,7 @@ Tier: {tier}
     )
 
     if response.status_code == 200:
-        st.success("📬 Email notification sent to SapienData!")
+        st.success("📬 Email notification sent to Sidekick Media!")
     else:
         st.error(f"❌ Mailjet error: {response.status_code} - {response.text}")
 
@@ -182,6 +182,22 @@ if not st.session_state.started:
     if all([st.session_state.name, st.session_state.email, st.session_state.industry, st.session_state.turnover]):
         if st.button("Start Survey"):
             st.session_state.started = True
+            if st.button("Start Survey"):
+                st.session_state.started = True
+
+                # ✅ Save early details immediately
+                client = get_gsheet_client()
+                sheet = client.open("Data Maturity Leads").sheet1
+                sheet.append_row([
+                st.session_state.name,
+                st.session_state.email,
+                st.session_state.industry,
+                st.session_state.turnover,
+                "",  # Score placeholder
+                "",  # Tier placeholder
+            ])
+
+    
             st.rerun()
     else:
         st.warning("Please complete all fields to begin.")
