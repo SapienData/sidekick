@@ -64,7 +64,7 @@ def get_gsheet_client():
 st.set_page_config(page_title="Data Maturity Survey", layout="centered")
 with st.sidebar:
     st.image("Sidekick Media - Logo.png", width=150)
-    st.markdown("### Data Maturity Survey")
+    st.markdown("### Data Maturity Survey-Powered by Sapien Data")
 
 # Questions 
 survey_questions = [
