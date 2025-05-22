@@ -159,21 +159,32 @@ if "name" not in st.session_state:
     st.session_state.name = ""
 if "email" not in st.session_state:
     st.session_state.email = ""
+if "industry" not in st.session_state:
+    st.session_state.industry = ""
+if "turnover" not in st.session_state:
+    st.session_state.turnover = ""
 if "started" not in st.session_state:
     st.session_state.started = False
 
-# Show intro form if not started
 if not st.session_state.started:
     st.subheader("👤 Tell us who you are to begin the survey")
     st.session_state.name = st.text_input("Your Name")
     st.session_state.email = st.text_input("Your Work Email")
+    st.session_state.industry = st.selectbox(
+        "Industry",
+        ["", "Technology", "Retail", "Finance", "Healthcare", "Education", "Manufacturing", "Other"]
+    )
+    st.session_state.turnover = st.selectbox(
+        "Annual Turnover (Approx.)",
+        ["", "< $1M", "$1M–$5M", "$5M–$20M", "$20M+"]
+    )
 
-    if st.session_state.name and st.session_state.email:
+    if all([st.session_state.name, st.session_state.email, st.session_state.industry, st.session_state.turnover]):
         if st.button("Start Survey"):
             st.session_state.started = True
             st.rerun()
     else:
-        st.warning("Please enter your name and email to begin.")
+        st.warning("Please complete all fields to begin.")
     st.stop()
 progress = int((st.session_state.step / len(survey_questions)) * 100)
 st.progress(progress)
