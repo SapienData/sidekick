@@ -186,17 +186,18 @@ if not st.session_state.started:
                 # ✅ Save early details immediately
                 client = get_gsheet_client()
                 sheet = client.open("Data Maturity Leads - Sidekick").sheet1
+                # Append row and estimate the row number
                 sheet.append_row([
-                st.session_state.name,
-                st.session_state.email,
-                st.session_state.industry,
-                st.session_state.turnover,
-                "",  # Score placeholder
-                "",  # Tier placeholder
-            ])
-
+                    st.session_state.name,
+                    st.session_state.email,
+                    st.session_state.industry,
+                    st.session_state.turnover
+                ])
     
-            st.rerun()
+                # Save row number in session (row count + 1 for 1-based index)
+                st.session_state.row_num = len(sheet.get_all_values())
+
+                st.rerun()
     else:
         st.warning("Please complete all fields to begin.")
     st.stop()
@@ -283,13 +284,22 @@ else:
                 st.success("✅ Thanks! We'll reach out to you shortly.")
 
                 # Save to Google Sheet
+                # Load the same worksheet again
                 client = get_gsheet_client()
                 sheet = client.open("Data Maturity Leads - Sidekick").sheet1
-                row = [st.session_state.name,st.session_state.email,st.session_state.industry,st.session_state.turnover,total_score,tier]
+                row_num = st.session_state.row_num
+
+                # Update Score (column 5) and Tier (column 6)
+                sheet.update_cell(row_num, 5, total_score)  # Column E
+                sheet.update_cell(row_num, 6, tier)         # Column F
+
+                # Now loop through Q/A pairs starting from column 7 (G)
+                col = 7
                 for r in st.session_state.responses:
-                    row.append(r["question"])
-                    row.append(r["answer"])
-                sheet.append_row(row)
+                    sheet.update_cell(row_num, col, r["question"])
+                    col += 1
+                    sheet.update_cell(row_num, col, r["answer"])
+                    col += 1
 
                 # Send email notification
                 send_mailjet_email(st.session_state.name,st.session_state.email,total_score,tier)
