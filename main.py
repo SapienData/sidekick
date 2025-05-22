@@ -271,7 +271,7 @@ else:
                 # Save to Google Sheet
                 client = get_gsheet_client()
                 sheet = client.open("Data Maturity Leads").sheet1
-                row = [st.session_state.name, st.session_state.email, total_score, tier]
+                row = [st.session_state.name,st.session_state.email,st.session_state.industry,st.session_state.turnover,total_score,tier]]
                 for r in st.session_state.responses:
                     row.append(r["question"])
                     row.append(r["answer"])
