@@ -77,9 +77,14 @@ with st.sidebar:
         color: #888;
         z-index: 100;
     }
+    .footer a {
+        color: inherit;         /* Same as text */
+        text-decoration: none;  /* No underline */
+        font-weight: bold;
+    }
     </style>
     <div class="footer">
-        Powered by <a href="https://www.sapiendata.com.au/" target="_blank"><strong>Sapien Data</strong></a>
+        Powered by <a href="https://www.sapiendata.com.au/" target="_blank">Sapien Data</a>
     </div>
     """,
     unsafe_allow_html=True
