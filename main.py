@@ -65,7 +65,25 @@ st.set_page_config(page_title="Data Maturity Survey", layout="centered")
 with st.sidebar:
     st.image("Sidekick Media - Logo.png", width=150)
     st.markdown("### Data Maturity Survey")
-    st.markdown("<sub><i>Powered by Sapien Data</i></sub>", unsafe_allow_html=True)
+    st.markdown(
+    """
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        padding: 10px 20px;
+        font-size: 0.8rem;
+        color: #888;
+        z-index: 100;
+    }
+    </style>
+    <div class="footer">
+        Powered by <a href="https://www.sapiendata.com.au/" target="_blank"><strong>Sapien Data</strong></a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # Questions 
 survey_questions = [
